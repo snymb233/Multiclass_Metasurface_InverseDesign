@@ -15,14 +15,14 @@ import pandas as pd
 import cv2
 import os
 
-#Location of Saved Generator
+#Location of Saved Generator#保存生成器的位置
 netGDir='C:/.../*.netG__.pt'
 
-#Location of Training Data
+#Location of Training Data#训练数据的位置
 spectra_path = 'C:/.../absorptionData_HybridGAN.csv'
 
-#Restoring Classes and Variables
-class Generator(nn.Module):
+#Restoring Classes and Variables#恢复类和变量
+class Generator(nn.Module)://构造生成器
     def __init__(self, ngpu):
         super(Generator, self).__init__()
         self.ngpu = ngpu               
@@ -161,7 +161,7 @@ def compare(i, factor, shift, results_folder, netGDir, spectra_path):
     
     return [pindexfake, pindexreal, tfake, treal, classifier]
 
-#Pass Sspectra into Generator
+#Pass Sspectra into Generator#将光谱传递到生成器
 indices = [0, 2016, 5308, 8936, 10680, 17000]
 # indices = []
 # for index in range(0,63):
@@ -179,7 +179,7 @@ for i in indices:
     file.write("\n" + row)
 file.close()
 
-#Convert Images to Black and White
+#Convert Images to Black and White#将图像转换为黑白
 im_size = 64
 im_path = results_folder+ '/Results/*-test.png'
 imgFolder = glob.glob(im_path)
@@ -201,13 +201,13 @@ for img in imgFolder:
     gray = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
     cv2.normalize(gray, gray, -1, 1, cv2.NORM_MINMAX)
     
-    #Apply Gaussian Filter
+    #Apply Gaussian Filter#应用高斯滤波器
     img_filter = scipy.ndimage.gaussian_filter(gray,sigma=0.75)
     ret, img_filter = cv2.threshold(img_filter,0.1,1,cv2.THRESH_BINARY) # 0 = black, 1 = white; everything under first number to black
     
     plt.imshow(img_filter, cmap = "gray")
     plt.imsave(img[:-4]+'-bw.png', img_filter, cmap = "gray")
 
-#Convert B/W Images to Binary (for Lumerical)    
+#Convert B/W Images to Binary (for Lumerical)    #将黑白图像转换为二进制（用于 Lumerical）
 Binary.convert(results_folder)
 
